@@ -16,7 +16,8 @@ class DBManager:
         self.db_url = db_url
 
         self.engine = create_async_engine(db_url, **kwargs)
-        self.session_maker = async_sessionmaker(self.engine, expire_on_commit=False)
+        self.session_maker = async_sessionmaker(
+            self.engine, expire_on_commit=False)
 
     async def create_tables(self):
         async with self.engine.begin() as conn:
@@ -36,6 +37,7 @@ class DBManager:
 SQL_DB = DBManager(
     base_model=Base,
     db_url=settings.database_url,
+    connect_args={"check_same_thread": False},
     echo=True
 )
 
