@@ -16,4 +16,4 @@ class JobOutSchema(BaseModel):
     description: str
     company: str
     created_at: datetime
-    updated_at: str
+    updated_at: datetime
