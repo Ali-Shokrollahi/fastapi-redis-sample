@@ -1,7 +1,7 @@
 from fastapi.exceptions import HTTPException
 import sqlalchemy as sa
-from .models import Job
 from src.core.database import DBManager
+from .models import Job
 
 
 async def get_job_by_title_company(db_session: DBManager, job_title: str, job_company: str) -> Job | None:
@@ -32,11 +32,10 @@ async def get_all_jobs(db_session: DBManager):
     return jobs
 
 
-async def get_job_by_id(db_session: DBManager, job_id: int) -> Job:
+async def get_job_by_id(db_session: DBManager,*, job_id: int) -> Job:
     query = sa.select(Job).where(Job.id == job_id)
     async with db_session.begin() as session:
         job = await session.scalar(query)
-
     if not job:
         raise HTTPException(404, "There is no job with this id")
     return job
@@ -51,16 +50,16 @@ async def search_job_by_title(db_session: DBManager, *, search_data: str):
 
 
 async def update_job(db_session: DBManager, job_id, *, job_title: str, job_description: str, job_company: str) -> Job:
-    job = await get_job_by_id(db_session, job_id)
+    job = await get_job_by_id(db_session, job_id=job_id)
     job.title = job_title.strip()
     job.description = job_description.strip()
     job.company = job_company.strip()
     async with db_session.begin() as session:
         session.add(job)
-    return await get_job_by_id(db_session, job_id)
+    return await get_job_by_id(db_session, job_id=job_id)
 
 
 async def del_job(db_session: DBManager, job_id) -> None:
-    job = await get_job_by_id(db_session, job_id)
+    job = await get_job_by_id(db_session, job_id=job_id)
     async with db_session.begin() as session:
         await session.delete(job)

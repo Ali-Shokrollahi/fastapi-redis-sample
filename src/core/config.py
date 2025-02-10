@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     title: str = "Redis practice"
     version: str = "0.1"
 
-    DB_NAME:str = 'jobs.db'
+    DB_NAME: str = 'jobs.db'
 
     model_config = SettingsConfigDict(env_file='.env', extra='ignore')
 
